@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Routes, Route, Link, Navigate } from 'react-ro
 import WelcomePage from './WelcomePage';
 import SignupPage from './SignupPage';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import LoginPage from './LoginPage';
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
    
           <Route path="/" element={<WelcomePage />} />
           <Route path="/signup" element={<SignupPage />} />
+          <Route path="/login" element={<LoginPage/>} />
         </Routes>
       </div>
     </Router>
