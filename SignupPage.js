@@ -1,10 +1,11 @@
 // src/SignupPage.js
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { createUserWithEmailAndPassword, } from 'firebase/auth';
-import { db, auth } from './firebaseConfig';
+import { createUserWithEmailAndPassword, GoogleAuthProvider} from 'firebase/auth';
+import { database, auth } from './firebaseConfig';
 import './Styling.css';
 import { setDoc, doc } from 'firebase/firestore';
+import { ref, set } from 'firebase/database';
 
 
 const SignupPage = () => {
@@ -13,7 +14,8 @@ const SignupPage = () => {
         lastName: '',
         email: '',
         password: '',
-        gender: ''
+        gender: '',
+        role: ''
     });
 
     const [error, setError] = useState('');
@@ -37,11 +39,12 @@ const SignupPage = () => {
             const userCredential = await createUserWithEmailAndPassword(auth, formData.email, formData.password);
             const user = userCredential.user;
 
-            await setDoc(doc(db, 'users', user.uid), {
+            await set(ref(database, 'users/' + user.uid), {
                 firstName: formData.firstName,
                 lastName: formData.lastName,
                 email: formData.email,
-                gender: formData.gender
+                gender: formData.gender,
+                role: formData.role
             });
 
             console.log('User signed up and document created:', user);
@@ -107,24 +110,62 @@ const SignupPage = () => {
                                 />
                             </div>
 
+                            <div className="form-group">
+            <label>Gender</label>
+            <div className="gender-group">
+              <input
+                type="radio"
+                id="male"
+                name="gender"
+                value="Male"
+                checked={formData.gender === 'Male'}
+                onChange={handleInputChange}
+              />
+              <label htmlFor="male">Male</label>
+              <input
+                type="radio"
+                id="female"
+                name="gender"
+                value="Female"
+                checked={formData.gender === 'Female'}
+                onChange={handleInputChange}
+              />
+              <label htmlFor="female">Female</label>
+              <input
+                type="radio"
+                id="custom"
+                name="gender"
+                value="Custom"
+                checked={formData.gender === 'Custom'}
+                onChange={handleInputChange}
+              />
+              <label htmlFor="custom">Others</label>
+            </div>
+          </div>
+
                             <div className='form-group'>
-                                <label>Gender</label>
+                                <label>Role</label>
 
                                 <select
                                     className='form-control'
-                                    name='gender'
-                                    value={formData.gender}
+                                    name='role'
+                                    value={formData.role}
                                     onChange={handleInputChange}
                                     required
                                 >
                                     <option value=''>Select</option>
-                                    <option value='male'>Male</option>
-                                    <option value='female'>Female</option>
-                                    <option value='other'>Other</option>
+                                    <option value='eventorganizer'>Event Organizer</option>
+                                    <option value='attendee'>Attendee</option>
+                                    <option value='admin'>Admin</option>
                                 </select>
                             </div>
+                            
+
                             <button type='submit' className='btn btn-primary'>
                                 Sign Up
+                            </button>
+                            <button type='submit' className='btn btn-primary'onClick={GoogleAuthProvider}>
+                                Google
                             </button>
 
                         </form>
