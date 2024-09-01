@@ -1,11 +1,12 @@
 // src/SignupPage.js
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { createUserWithEmailAndPassword, GoogleAuthProvider} from 'firebase/auth';
+import { createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { database, auth } from './firebaseConfig';
 import './Styling.css';
 import { setDoc, doc } from 'firebase/firestore';
-import { ref, set } from 'firebase/database';
+import { ref, set, get } from 'firebase/database';
+
 
 
 const SignupPage = () => {
@@ -54,6 +55,37 @@ const SignupPage = () => {
             alert('Signup failed. Please try again.');
         }
     };
+
+    const handleGoogleSignup = async () => {
+        const provider = new GoogleAuthProvider();
+
+        try {
+            const result = await signInWithPopup(auth, provider);
+            const user = result.user;
+            const fullName = user.displayName ? user.displayName.split(' ') : [];
+            const firstName = fullName[0] || '';
+            const lastName = fullName[1] || '';
+            const userRef = ref(database, 'users/' + user.uid);
+            const snapshot = await get(userRef);
+
+            if (!snapshot.exists()) {
+                await set(userRef, {
+                    firstName: firstName,
+                    lastName: lastName,
+                    email: user.email,
+                    gender: '',
+                    role: 'attendee',
+                });
+            }
+
+            console.log('User signed up with Google:', user);
+            navigate('/attendeehomepage');
+        } catch (error) {
+            console.error('Error during Google signup:', error);
+            alert('Google Signup failed. Please try again.');
+        }
+    };
+
 
     return (
         <div>
@@ -111,37 +143,37 @@ const SignupPage = () => {
                             </div>
 
                             <div className="form-group">
-            <label>Gender</label>
-            <div className="gender-group">
-              <input
-                type="radio"
-                id="male"
-                name="gender"
-                value="Male"
-                checked={formData.gender === 'Male'}
-                onChange={handleInputChange}
-              />
-              <label htmlFor="male">Male</label>
-              <input
-                type="radio"
-                id="female"
-                name="gender"
-                value="Female"
-                checked={formData.gender === 'Female'}
-                onChange={handleInputChange}
-              />
-              <label htmlFor="female">Female</label>
-              <input
-                type="radio"
-                id="custom"
-                name="gender"
-                value="Custom"
-                checked={formData.gender === 'Custom'}
-                onChange={handleInputChange}
-              />
-              <label htmlFor="custom">Others</label>
-            </div>
-          </div>
+                                <label>Gender</label>
+                                <div className="gender-group">
+                                    <input
+                                        type="radio"
+                                        id="male"
+                                        name="gender"
+                                        value="Male"
+                                        checked={formData.gender === 'Male'}
+                                        onChange={handleInputChange}
+                                    />
+                                    <label htmlFor="male">Male</label>
+                                    <input
+                                        type="radio"
+                                        id="female"
+                                        name="gender"
+                                        value="Female"
+                                        checked={formData.gender === 'Female'}
+                                        onChange={handleInputChange}
+                                    />
+                                    <label htmlFor="female">Female</label>
+                                    <input
+                                        type="radio"
+                                        id="custom"
+                                        name="gender"
+                                        value="Custom"
+                                        checked={formData.gender === 'Custom'}
+                                        onChange={handleInputChange}
+                                    />
+                                    <label htmlFor="custom">Others</label>
+                                </div>
+                            </div>
 
                             <div className='form-group'>
                                 <label>Role</label>
@@ -151,21 +183,20 @@ const SignupPage = () => {
                                     name='role'
                                     value={formData.role}
                                     onChange={handleInputChange}
-                                    required
-                                >
+                                    required>
                                     <option value=''>Select</option>
                                     <option value='eventorganizer'>Event Organizer</option>
                                     <option value='attendee'>Attendee</option>
                                     <option value='admin'>Admin</option>
                                 </select>
                             </div>
-                            
+
 
                             <button type='submit' className='btn btn-primary'>
                                 Sign Up
                             </button>
-                            <button type='submit' className='btn btn-primary'onClick={GoogleAuthProvider}>
-                                Google
+                            <button type='submit' className='btn btn-primary' onClick={handleGoogleSignup}>
+                                Login with Google
                             </button>
 
                         </form>
