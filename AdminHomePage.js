@@ -1,4 +1,4 @@
-// src/SignupPage.js
+
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createUserWithEmailAndPassword, GoogleAuthProvider } from 'firebase/auth';
