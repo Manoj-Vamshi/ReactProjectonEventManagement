@@ -8,18 +8,24 @@ import LoginPage from './LoginPage';
 import EventOraganiserHomePage from './EventOrganiserHomePage';
 import AdminHomePage from './AdminHomePage';
 import AttendeeHomePage from './AttendeeHomePage';
+import Aboutus from './Aboutus';
+import Terms from './Terms&Conditions';
+import CreateEvent from './CreateEvent';
+import ManageEvents from './ManageEvent';
+import BookNow from './BookNow';
+import CheckOutForm from './CheckOutForm';
 
 
 function App() {
   return (
     <Router>
       <div>
-      <header>
-        <div class="d-flex justify-content-between align-items-center p-3 bg-dark text-white">
+        <header>
+          <div class="d-flex justify-content-between align-items-center p-3 bg-dark text-white">
             <a id="logo" href="/" class="text-white font-weight-bold h4">VRV Events</a>
             <input id="search" type="text" class="form-control w-50" placeholder="Search" />
-        </div>
-    </header>
+          </div>
+        </header>
       </div>
       <div >
         <Routes>
@@ -29,6 +35,20 @@ function App() {
           <Route path="/eventoragniserhomepage" element={<EventOraganiserHomePage />} />
           <Route path="/attendeehomepage" element={<AttendeeHomePage />} />
           <Route path="/adminhomepage" element={<AdminHomePage />} />
+          <Route path="/about" element={<Aboutus />} />
+          <Route path="/terms" element={<Terms />} />
+          <Route path="/create-event" element={<CreateEvent />} />
+          <Route path="/manageevent" element={<ManageEvents />} />
+          <Route path="/book-now/:eventId" element={<BookNow />} />
+          <Route path="/checkoutform" element={<CheckOutForm />} />
+
+
+
+
+          Terms
+
+         
+
 
         </Routes>
       </div>
@@ -41,7 +61,7 @@ function App() {
                 <h5 class="text-uppercase">About Us</h5>
                 <ul class="list-unstyled mb-0">
                   <li>
-                    <a href="Aboutus.html" class="text-dark">Who We Are</a>
+                    <a href="/about" class="text-dark">Who We Are</a>
                   </li>
                 </ul>
               </div>
@@ -68,7 +88,7 @@ function App() {
                 <h5 class="text-uppercase">Terms & Conditions</h5>
                 <ul class="list-unstyled">
                   <li>
-                    <a href="Terms&Conditions.html" class="text-dark">Read Terms</a>
+                    <a href="terms" class="text-dark">Read Terms</a>
                   </li>
                 </ul>
               </div>
