@@ -53,48 +53,44 @@ function App() {
         </Routes>
       </div>
       <div>
-        <footer class="bg-light text-center text-lg-start" id='footer'>
-          <div class="container p-6">
-            <div class="row">
-
-              <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
-                <h5 class="text-uppercase">About Us</h5>
-                <ul class="list-unstyled mb-0">
+         <footer className="bg-light text-center text-lg-start">
+          <div className="container p-6">
+            <div className="row">
+              <div className="col-lg-3 col-md-6 mb-4 mb-md-0">
+                <h5 className="text-uppercase">About Us</h5>
+                <ul className="list-unstyled mb-0">
                   <li>
-                    <a href="/about" class="text-dark">Who We Are</a>
+                    <a href="/about" className="text-dark">Who We Are</a>
                   </li>
                 </ul>
               </div>
-
-              <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
-                <h5 class="text-uppercase">Contact Us</h5>
-                <ul class="list-unstyled">
+              <div className="col-lg-3 col-md-6 mb-4 mb-md-0">
+                <h5 className="text-uppercase">Contact Us</h5>
+                <ul className="list-unstyled">
                   <li>
-                    <a href="Contactus.html" class="text-dark">Get in Touch</a>
+                    <a href="Contactus.html" className="text-dark">Get in Touch</a>
                   </li>
                 </ul>
               </div>
-
-              <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
-                <h5 class="text-uppercase">Privacy Policy</h5>
-                <ul class="list-unstyled">
+              <div className="col-lg-3 col-md-6 mb-4 mb-md-0">
+                <h5 className="text-uppercase">Privacy Policy</h5>
+                <ul className="list-unstyled">
                   <li>
-                    <a href="PrivacyPolicy.html" class="text-dark">Our Policy</a>
+                    <a href="PrivacyPolicy.html" className="text-dark">Our Policy</a>
                   </li>
                 </ul>
               </div>
-
-              <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
-                <h5 class="text-uppercase">Terms & Conditions</h5>
-                <ul class="list-unstyled">
+              <div className="col-lg-3 col-md-6 mb-4 mb-md-0">
+                <h5 className="text-uppercase">Terms & Conditions</h5>
+                <ul className="list-unstyled">
                   <li>
-                    <a href="terms" class="text-dark">Read Terms</a>
+                    <a href="terms" className="text-dark">Read Terms</a>
                   </li>
                 </ul>
               </div>
             </div>
           </div>
-          <div class="text-center p-9 bg-dark text-white">
+          <div className="text-center p-3 bg-dark text-white">
             <span>&copy; 2024 Event Management. All rights reserved.</span>
           </div>
         </footer>
