@@ -1,18 +1,13 @@
-// src/AttendeeHomePage.js
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { database, auth } from './firebaseConfig';
 import './Styling.css';
-import { setDoc, doc } from 'firebase/firestore';
 import { ref, get } from 'firebase/database';
-
 
 const AttendeeHomePage = () => {
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
-    const [role, setRole] = useState('');
-    const [email, setEmail] = useState('');
-    const navigate = useNavigate();
+    const [events, setEvents] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -24,19 +19,67 @@ const AttendeeHomePage = () => {
                 if (snapshot.exists()) {
                     const userData = snapshot.val();
                     setFirstName(userData.firstName);
+                    setLastName(userData.lastName);
                 } else {
-                    console.error('No data available');
+                    console.error('No user data available');
                 }
             }
         };
 
+        const fetchEvents = async () => {
+            try {
+                const eventsRef = ref(database, 'events');
+                const snapshot = await get(eventsRef);
+
+                if (snapshot.exists()) {
+                    const eventsData = snapshot.val();
+                    const eventsArray = Object.values(eventsData); // Convert event object to array
+                    setEvents(eventsArray);
+                } else {
+                    console.error('No events available');
+                }
+            } catch (error) {
+                console.error('Error fetching events:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
         fetchUserData();
+        fetchEvents();
     }, []);
+
+    if (loading) return <p>Loading events...</p>;
 
     return (
         <div>
-            <h1>Attendee HomePage</h1>
-            <h2>Welcome {firstName}</h2>
+            <div className="jumbotron text-center">
+                <h1 className="display-4">Welcome, {firstName} {lastName}!</h1>
+                <p className="lead">Explore exciting events and book your tickets now.</p>
+            </div>
+
+            <div className="container">
+                <h2 className="text-center lg-8">Upcoming Events</h2>
+                <div className="row">
+                    {events.length > 0 ? (
+                        events.map((event, index) => (
+                            <div key={index} className="col-lg-4 mb-4">
+                                <div className="card">
+                                    <div className="card-body">
+                                        <h5 className="card-title">{event.name}</h5>
+                                        <p className="card-text">Date: {event.date}</p>
+                                        <p className="card-text">Location: {event.location}</p>
+                                        <a href={`/book-now/${event.id}`} className="btn btn-primary">Book Now</a>
+
+                                    </div>
+                                </div>
+                            </div>
+                        ))
+                    ) : (
+                        <p>No upcoming events found.</p>
+                    )}
+                </div>
+            </div>
         </div>
     );
 };
