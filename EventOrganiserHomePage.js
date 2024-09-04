@@ -18,7 +18,7 @@ const EventOraganiserHomePage = () => {
                 if (snapshot.exists()) {
                     const userData = snapshot.val();
                     setFirstName(userData.firstName);
-                    // Assuming userData has an events array or similar structure
+                    
                     if (userData.events) {
                         setEvents(userData.events);
                     }
