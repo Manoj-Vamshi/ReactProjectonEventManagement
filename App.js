@@ -15,36 +15,33 @@ import ManageEvents from './ManageEvent';
 import BookNow from './BookNow';
 import CheckOutForm from './CheckOutForm';
 
-
 function App() {
   return (
     <Router>
-      <div>
+      <div id="root">
         <header>
-          <div class="d-flex justify-content-between align-items-center p-3 bg-dark text-white">
-            <a id="logo" href="/" class="text-white font-weight-bold h4">VRV Events</a>
-            <input id="search" type="text" class="form-control w-50" placeholder="Search" />
+          <div className="d-flex justify-content-between align-items-center p-3 bg-dark text-white">
+            <a id="logo" href="/" className="text-white font-weight-bold h4">VRV Events</a>
+            <input id="search" type="text" className="form-control w-50" placeholder="Search" />
           </div>
         </header>
-      </div>
-      <div >
-        <Routes>
-          <Route path="/" element={<WelcomePage />} />
-          <Route path="/signup" element={<SignupPage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/eventoragniserhomepage" element={<EventOraganiserHomePage />} />
-          <Route path="/attendeehomepage" element={<AttendeeHomePage />} />
-          <Route path="/adminhomepage" element={<AdminHomePage />} />
-          <Route path="/about" element={<Aboutus />} />
-          <Route path="/terms" element={<Terms />} />
-          <Route path="/create-event" element={<CreateEvent />} />
-          <Route path="/manageevent" element={<ManageEvents />} />
-          <Route path="/book-now/:eventId" element={<BookNow />} />
-          <Route path="/checkoutform" element={<CheckOutForm />} />
-        </Routes>
-      </div>
-      <div>
-         <footer className="bg-light text-center text-lg-start">
+        <main>
+          <Routes>
+            <Route path="/" element={<WelcomePage />} />
+            <Route path="/signup" element={<SignupPage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/eventoragniserhomepage" element={<EventOraganiserHomePage />} />
+            <Route path="/attendeehomepage" element={<AttendeeHomePage />} />
+            <Route path="/adminhomepage" element={<AdminHomePage />} />
+            <Route path="/about" element={<Aboutus />} />
+            <Route path="/terms" element={<Terms />} />
+            <Route path="/create-event" element={<CreateEvent />} />
+            <Route path="/manageevent" element={<ManageEvents />} />
+            <Route path="/book-now/:eventId" element={<BookNow />} />
+            <Route path="/checkoutform" element={<CheckOutForm />} />
+          </Routes>
+        </main>
+        <footer className="bg-light text-center text-lg-start">
           <div className="container p-6">
             <div className="row">
               <div className="col-lg-3 col-md-6 mb-4 mb-md-0">
@@ -87,7 +84,6 @@ function App() {
         </footer>
       </div>
     </Router>
-
   );
 }
 
