@@ -41,15 +41,6 @@ function App() {
           <Route path="/manageevent" element={<ManageEvents />} />
           <Route path="/book-now/:eventId" element={<BookNow />} />
           <Route path="/checkoutform" element={<CheckOutForm />} />
-
-
-
-
-          Terms
-
-         
-
-
         </Routes>
       </div>
       <div>
