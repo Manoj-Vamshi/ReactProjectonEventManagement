@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import './Styling.css';
+import './Styling.css'; // Ensure this file is updated with the above CSS
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const WelcomePage = () => {
@@ -21,7 +21,6 @@ const WelcomePage = () => {
           <h1 className="text-primary">VRV Events</h1>
           <p>"Simplify, Organize, Celebrate..!!"</p>
         </div>
-        
         <div className="button-container">
           <button className="btn btn-primary" onClick={handleSignupClick}>Sign Up</button>
           <button className="btn btn-primary" onClick={handleLoginClick}>Login</button>
