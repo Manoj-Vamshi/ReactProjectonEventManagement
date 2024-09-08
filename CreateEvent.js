@@ -10,13 +10,14 @@ const CreateEvent = () => {
     const [eventTime, setEventTime] = useState('');
     const [eventLocation, setEventLocation] = useState('');
     const [eventDescription, setEventDescription] = useState('');
+    const [ticketPrice, setTicketPrice] = useState(''); 
     const [error, setError] = useState('');
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (!eventName || !eventDate || !eventTime || !eventLocation) {
+        if (!eventName || !eventDate || !eventTime || !eventLocation || ticketPrice === '') {
             setError('Please fill in all required fields.');
             return;
         }
@@ -29,11 +30,11 @@ const CreateEvent = () => {
                 time: eventTime,
                 location: eventLocation,
                 description: eventDescription,
+                ticketPrice: parseFloat(ticketPrice), 
                 createdBy: auth.currentUser.uid,
             };
 
             await push(eventsRef, newEvent);
-            navigate('/manageevent'); // Redirect to manage events page after successful creation
         } catch (error) {
             console.error('Error creating event:', error);
             setError('Failed to create event. Please try again.');
@@ -101,6 +102,18 @@ const CreateEvent = () => {
                         value={eventDescription}
                         onChange={(e) => setEventDescription(e.target.value)}
                     ></textarea>
+                </div>
+                <div className="form-group">
+                    <label htmlFor="ticketPrice">Ticket Price ($)</label>
+                    <input
+                        type="number"
+                        className="form-control"
+                        id="ticketPrice"
+                        placeholder="Enter ticket price"
+                        value={ticketPrice}
+                        onChange={(e) => setTicketPrice(e.target.value)}
+                        required
+                    />
                 </div>
                 <button type="submit" className="btn btn-primary">Create Event</button>
             </form>
