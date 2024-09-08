@@ -1,25 +1,44 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { ref, onValue } from 'firebase/database';
-import { database } from './firebaseConfig';
+import { database } from './firebaseConfig'; 
 import { Link } from 'react-router-dom';
+import { UserContext } from './UserContext';
 import './Styling.css';
+import ViewEvent from './ViewEvent';
 
 const ManageEvents = () => {
     const [events, setEvents] = useState([]);
+    const { userId, loading } = useContext(UserContext);
 
     useEffect(() => {
+        if (loading) return; 
+
+        if (!userId) {
+            setEvents([]);
+            return;
+        }
+
         const eventsRef = ref(database, 'events');
-        
-        onValue(eventsRef, (snapshot) => {
+
+        const unsubscribe = onValue(eventsRef, (snapshot) => {
             const data = snapshot.val();
             if (data) {
-                const eventsArray = Object.entries(data).map(([key, value]) => ({ id: key, ...value }));
-                setEvents(eventsArray);
+                const filteredEvents = Object.entries(data)
+                    .filter(([key, value]) => value.createdBy === userId) 
+                    .map(([key, value]) => ({ id: key, ...value }));
+
+                setEvents(filteredEvents);
             } else {
                 setEvents([]);
             }
+        }, (error) => {
+            console.error('Error fetching events:', error);
         });
-    }, []);
+
+        return () => unsubscribe();
+    }, [userId, loading]);
+
+    if (loading) return <p>Loading...</p>;
 
     return (
         <div className="container mt-5">
