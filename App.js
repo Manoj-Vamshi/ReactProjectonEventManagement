@@ -12,6 +12,8 @@ import Aboutus from './Aboutus';
 import Terms from './Terms&Conditions';
 import CreateEvent from './CreateEvent';
 import ManageEvents from './ManageEvent';
+import EditEvent from './EditEvents';
+import ViewEvent from './ViewEvent';
 import BookNow from './BookNow';
 import CheckOutForm from './CheckOutForm';
 import EOHomepage from './EOHomepage'
@@ -35,8 +37,9 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/EOHomepage" element={<EOHomepage />} />
           <Route path="/profile" element={<EventOrganizerProfilePage />} />
-          
-          
+          <Route path="/manage-events" element={<ManageEvents />} />
+          <Route path="/edit-event/:id" element={<EditEvent />} />
+          <Route path="/view-event/:id" element={<ViewEvent />} />
           <Route path="/adminhomepage" element={<AdminHomePage />} />
           <Route path="/attendeehomepage" element={<AttendeeHomePage />} />
           <Route path="/about" element={<Aboutus />} />
