@@ -1,48 +1,44 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ref, push } from 'firebase/database';
+import { ref, push, get } from 'firebase/database';
 import { database, auth } from './firebaseConfig';
 import './Styling.css';
-import { loadStripe } from '@stripe/stripe-js';
-import { Elements } from '@stripe/react-stripe-js';
-import CheckOutForm from './CheckOutForm';  
-
-const stripePromise = loadStripe('your-publishable-key-here');
+import PayPalCheckout from './PayPalCheckout';
 
 const BookNow = () => {
     const { eventId } = useParams();
+    const [eventName, setEventName] = useState('');
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [tickets, setTickets] = useState(1);
     const [isPaymentComplete, setIsPaymentComplete] = useState(false);
     const navigate = useNavigate();
 
-    const handleBooking = async () => {
-        try {
-            const user = auth.currentUser;
-            if (user) {
-                const bookingRef = ref(database, 'bookings');
-                await push(bookingRef, {
-                    eventId,
-                    userId: user.uid,
-                    name,
-                    email,
-                    tickets,
-                });
-                alert('Booking successful!');
-                navigate('/attendeehomepage');
-            } else {
-                alert('You need to be logged in to book an event.');
+    useEffect(() => {
+        const fetchEventDetails = async () => {
+            try {
+                const eventRef = ref(database, `events/${eventId}`);
+                const snapshot = await get(eventRef);
+                if (snapshot.exists()) {
+                    const eventData = snapshot.val();
+                    setEventName(eventData.name);
+                } else {
+                    console.log('Event does not exist.');
+                }
+            } catch (error) {
+                console.error('Error fetching event details:', error);
             }
-        } catch (error) {
-            console.error('Error booking event:', error);
-            alert('Failed to book event. Please try again.');
+        };
+
+        if (eventId) {
+            fetchEventDetails();
         }
-    };
+    }, [eventId]);
 
     const handlePaymentSuccess = () => {
+        
         setIsPaymentComplete(true);
-        handleBooking();
+        navigate('/attendeehomepage'); 
     };
 
     return (
@@ -85,14 +81,15 @@ const BookNow = () => {
                         required
                     />
                 </div>
-                {!isPaymentComplete ? (
-                    <Elements stripe={stripePromise}>
-                        <CheckOutForm onPaymentSuccess={handlePaymentSuccess} />
-                    </Elements>
-                ) : (
-                    <button type="button" className="btn btn-primary" onClick={handleBooking}>
-                        Confirm Booking
-                    </button>
+
+                {!isPaymentComplete && (
+                    <PayPalCheckout
+                        eventId={eventId}
+                        eventName={eventName}
+                        amount={tickets * 10} 
+                        tickets={tickets} 
+                        onPaymentSuccess={handlePaymentSuccess} 
+                    />
                 )}
             </form>
         </div>
