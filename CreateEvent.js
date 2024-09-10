@@ -10,8 +10,9 @@ const CreateEvent = () => {
     const [eventTime, setEventTime] = useState('');
     const [eventLocation, setEventLocation] = useState('');
     const [eventDescription, setEventDescription] = useState('');
-    const [ticketPrice, setTicketPrice] = useState(''); 
+    const [ticketPrice, setTicketPrice] = useState('');
     const [error, setError] = useState('');
+    const [successMessage, setSuccessMessage] = useState(''); 
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
@@ -30,11 +31,26 @@ const CreateEvent = () => {
                 time: eventTime,
                 location: eventLocation,
                 description: eventDescription,
-                ticketPrice: parseFloat(ticketPrice), 
+                ticketPrice: parseFloat(ticketPrice),
                 createdBy: auth.currentUser.uid,
             };
 
             await push(eventsRef, newEvent);
+
+           
+            setEventName('');
+            setEventDate('');
+            setEventTime('');
+            setEventLocation('');
+            setEventDescription('');
+            setTicketPrice('');
+
+            setSuccessMessage('Event created successfully!');
+            
+            setTimeout(() => {
+                setSuccessMessage('');
+                navigate('/EOHomepage'); 
+            }, 2000);
         } catch (error) {
             console.error('Error creating event:', error);
             setError('Failed to create event. Please try again.');
@@ -45,6 +61,7 @@ const CreateEvent = () => {
         <div className="container mt-5">
             <h1>Create Event</h1>
             {error && <div className="alert alert-danger">{error}</div>}
+            {successMessage && <div className="alert alert-success">{successMessage}</div>}
             <form onSubmit={handleSubmit}>
                 <div className="form-group">
                     <label htmlFor="eventName">Event Name</label>
