@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ref, set } from 'firebase/database';
-import { database } from './firebaseConfig'; // Ensure this path is correct
+import { database } from './firebaseConfig';
 import './Styling.css';
 
 const Contactus = () => {
@@ -17,21 +17,17 @@ const Contactus = () => {
         }
 
         try {
-            // Create a unique key for each contact form submission
-            const newContactKey = Date.now().toString(); // Ensure the key is a string
+            const newContactKey = Date.now().toString(); 
 
-            // Reference to the "contacts" collection
             const contactRef = ref(database, `contacts/${newContactKey}`);
 
-            // Save data to Firebase Realtime Database
             await set(contactRef, {
                 name: name,
                 email: email,
                 message: message,
-                timestamp: new Date().toISOString() // Adding a timestamp
+                timestamp: new Date().toISOString() 
             });
 
-            // Clear the form fields
             setName('');
             setEmail('');
             setMessage('');
