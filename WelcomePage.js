@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import './Styling.css'; // Ensure this file is updated with the above CSS
+import './Styling.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const WelcomePage = () => {
