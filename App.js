@@ -32,7 +32,11 @@ function App() {
           <Route path="/" element={<WelcomePage />} />
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/login" element={<LoginPage />} />
-          <Route path="/eventoragniserhomepage" element={<EventOraganiserHomePage />} />
+          <Route path="/EOHomepage" element={<EOHomepage />} />
+          <Route path="/profile" element={<EventOrganizerProfilePage />} />
+          <Route path="/manage-events" element={<ManageEvents />} />
+          <Route path="/edit-event/:id" element={<EditEvent />} />
+          <Route path="/view-event/:id" element={<ViewEvent />} />
           <Route path="/attendeehomepage" element={<AttendeeHomePage />} />
           <Route path="/adminhomepage" element={<AdminHomePage />} />
           <Route path="/about" element={<Aboutus />} />
