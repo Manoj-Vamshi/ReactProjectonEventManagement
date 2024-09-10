@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { auth, database } from './firebaseConfig';
 import { ref, onValue, get } from 'firebase/database';
+import { signOut } from 'firebase/auth'; 
 import './Styling.css';
 import { UserContext } from './UserContext';
 
@@ -29,7 +30,6 @@ const EOHomepage = () => {
                         const userData = snapshot.val();
                         setFirstName(userData.firstName || 'User');
 
-                        
                         const eventsRef = ref(database, `events`);
                         const unsubscribe = onValue(eventsRef, (snapshot) => {
                             if (snapshot.exists()) {
@@ -51,7 +51,6 @@ const EOHomepage = () => {
                             }
                         });
 
-                        
                         return () => unsubscribe();
                     } else {
                         console.error('No user data available');
@@ -73,6 +72,14 @@ const EOHomepage = () => {
         return events.filter(event => new Date(event.date) <= new Date()).length;
     };
 
+    const handleLogout = () => {
+        signOut(auth).then(() => {
+            navigate('/Login'); 
+        }).catch((error) => {
+            console.error('Error signing out:', error);
+        });
+    };
+
     if (loading) return <p>Loading...</p>;
 
     return (
@@ -84,6 +91,7 @@ const EOHomepage = () => {
                         <Link to="/create-event" className="list-group-item list-group-item-action">Create New Event</Link>
                         <Link to="/manage-events" className="list-group-item list-group-item-action">Manage Events</Link>
                         <Link to="/profile" className="list-group-item list-group-item-action">Profile</Link>
+                        <button onClick={handleLogout} className="list-group-item list-group-item-action">Logout</button>
                     </div>
                 </div>
 
