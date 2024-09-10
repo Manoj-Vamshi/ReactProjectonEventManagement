@@ -14,19 +14,20 @@ import ManageEvents from './ManageEvent';
 import BookNow from './BookNow';  
 import CheckOutForm from './CheckOutForm';
 import Logo from './vrv1.jpg';
+import Contactus from './Contactus.js';
 
 function App() {
   return (
     <Router>
       <div id="root">
         <header>
-          <div className="d-flex justify-content-between align-items-center p-2">
-            <a id="logo" href="/" className="text-white d-flex align-items-center">
-              <img src={Logo} alt="VRV" style={{ height: '75px', marginRight: '15px' }} />
-              <span className="h4 mb-0 ml-2">VRV Events</span>
-            </a>
+        <div className="d-flex justify-content-between align-items-center p-2 bg-dark text-white">
+        <a id="Logo" href="/" className="text-white d-flex align-items-center">
+          <img src={Logo} alt="VRV" style={{ height: '75px', marginRight: '15px' }} />
+          <span className="h4 mb-0 ml-2">VRV Events</span>
+        </a>
             <div className="d-flex justify-content-center w-100">
-              <input id="search" type="text" className="form-control text-center" placeholder="Search" />
+              <input id="search" type="text" className="form-control text-center" placeholder="Search" style={{ width: '400px' }} />
             </div>
           </div>
         </header>
@@ -47,7 +48,7 @@ function App() {
             <Route path="/checkoutform" element={<CheckOutForm />} />
           </Routes>
         </main>
-        <footer className="text-center text-lg-start">
+        <footer className="bg-light text-center text-lg-start">
           <div className="container p-6">
             <div className="row">
               <div className="col-lg-3 col-md-6 mb-4 mb-md-0">
@@ -62,7 +63,7 @@ function App() {
                 <h5 className="text-uppercase">Contact Us</h5>
                 <ul className="list-unstyled">
                   <li>
-                    <a href="Contactus.html" className="text-dark">Get in Touch</a>
+                    <a href="Contactus" className="text-dark">Get in Touch</a>
                   </li>
                 </ul>
               </div>
@@ -88,7 +89,6 @@ function App() {
             <span>&copy; 2024 Event Management. All rights reserved.</span>
           </div>
         </footer>
-
       </div>
     </Router>
   );
