@@ -1,26 +1,31 @@
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import './App.css';
-import { BrowserRouter as Router, Routes, Route, Link, Navigate } from 'react-router-dom';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import WelcomePage from './WelcomePage';
 import SignupPage from './SignupPage';
-import 'bootstrap/dist/css/bootstrap.min.css';
 import LoginPage from './LoginPage';
-import EventOraganiserHomePage from './EventOrganiserHomePage';
+import EventOrganizerProfilePage from './EventOrganizerProfilePage';
 import AdminHomePage from './AdminHomePage';
 import AttendeeHomePage from './AttendeeHomePage';
 import Aboutus from './Aboutus';
 import Terms from './Terms&Conditions';
 import CreateEvent from './CreateEvent';
 import ManageEvents from './ManageEvent';
-import BookNow from './BookNow';  
+import EditEvent from './EditEvents';
+import ViewEvent from './ViewEvent';
+import BookNow from './BookNow';
 import CheckOutForm from './CheckOutForm';
+import Contactus from './Contactus';
+import EOHomepage from './EOHomepage';
 import Logo from './vrv1.jpg';
-import Contactus from './Contactus.js';
+
 
 function App() {
   return (
     <Router>
-      <div id="root">
-        <header>
+      <div>
+      <header>
         <div className="d-flex justify-content-between align-items-center p-2 bg-dark text-white">
         <a id="Logo" href="/" className="text-white d-flex align-items-center">
           <img src={Logo} alt="VRV" style={{ height: '75px', marginRight: '15px' }} />
@@ -31,24 +36,30 @@ function App() {
             </div>
           </div>
         </header>
-
-        <main>
-          <Routes>
-            <Route path="/" element={<WelcomePage />} />
-            <Route path="/signup" element={<SignupPage />} />
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/eventoragniserhomepage" element={<EventOraganiserHomePage />} />
-            <Route path="/attendeehomepage" element={<AttendeeHomePage />} />
-            <Route path="/adminhomepage" element={<AdminHomePage />} />
-            <Route path="/about" element={<Aboutus />} />
-            <Route path="/terms" element={<Terms />} />
-            <Route path="/create-event" element={<CreateEvent />} />
-            <Route path="/manageevent" element={<ManageEvents />} />
-            <Route path="/book-now/:eventId" element={<BookNow />} />
-            <Route path="/checkoutform" element={<CheckOutForm />} />
-          </Routes>
-        </main>
-        <footer className="bg-light text-center text-lg-start">
+      </div>
+      <div>
+        <Routes>
+          <Route path="/" element={<WelcomePage />} />
+          <Route path="/signup" element={<SignupPage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/EOHomepage" element={<EOHomepage />} />
+          <Route path="/profile" element={<EventOrganizerProfilePage />} />
+          <Route path="/manage-events" element={<ManageEvents />} />
+          <Route path="/edit-event/:id" element={<EditEvent />} />
+          <Route path="/view-event/:id" element={<ViewEvent />} />
+          <Route path="/adminhomepage" element={<AdminHomePage />} />
+          <Route path="/attendeehomepage" element={<AttendeeHomePage />} />
+          <Route path="/about" element={<Aboutus />} />
+          <Route path="/terms" element={<Terms />} />
+          <Route path="/create-event" element={<CreateEvent />} />
+          <Route path="/Contactus" element={<Contactus />} />
+          <Route path="/manageevent" element={<ManageEvents />} />
+          <Route path="/book-now/:eventId" element={<BookNow />} />
+          <Route path="/checkoutform" element={<CheckOutForm />} />
+        </Routes>
+      </div>
+      <div>
+      <footer className="bg-light text-center text-lg-start">
           <div className="container p-6">
             <div className="row">
               <div className="col-lg-3 col-md-6 mb-4 mb-md-0">
