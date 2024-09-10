@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ref, set } from 'firebase/database';
-import { database } from './firebaseConfig';
+import { database } from './firebaseConfig'; 
 import './Styling.css';
 
 const Contactus = () => {
@@ -27,7 +27,6 @@ const Contactus = () => {
                 message: message,
                 timestamp: new Date().toISOString() 
             });
-
             setName('');
             setEmail('');
             setMessage('');
