@@ -5,7 +5,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import WelcomePage from './WelcomePage';
 import SignupPage from './SignupPage';
 import LoginPage from './LoginPage';
-import EventOrganizerProfilePage from './EventOrganizerProfilePage';
+import EventOrganiserProfilePage from './EventOrganiserProfilePage';
 import AdminHomePage from './AdminHomePage';
 import AttendeeHomePage from './AttendeeHomePage';
 import Aboutus from './Aboutus';
@@ -19,15 +19,21 @@ import CheckOutForm from './CheckOutForm';
 import Contactus from './Contactus';
 import EOHomepage from './EOHomepage';
 import Logo from './vrv1.jpg';
+import { Elements } from '@stripe/react-stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
+
+const stripePromise = loadStripe('pk_test_A7jK4iCYHL045qgjjfzAfPxu');
+
 
 
 function App() {
   return (
     <Router>
+       <Elements stripe={stripePromise}>
       <div>
       <header>
         <div className="d-flex justify-content-between align-items-center p-2 bg-dark text-white">
-        <a id="Logo" href="/" className="text-white d-flex align-items-center">
+        <a id="Logo"  className="text-white d-flex align-items-center">
           <img src={Logo} alt="VRV" style={{ height: '75px', marginRight: '15px' }} />
           <span className="h4 mb-0 ml-2">VRV Events</span>
         </a>
@@ -43,7 +49,7 @@ function App() {
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/EOHomepage" element={<EOHomepage />} />
-          <Route path="/profile" element={<EventOrganizerProfilePage />} />
+          <Route path="/profile" element={<EventOrganiserProfilePage />} />
           <Route path="/manage-events" element={<ManageEvents />} />
           <Route path="/edit-event/:id" element={<EditEvent />} />
           <Route path="/view-event/:id" element={<ViewEvent />} />
@@ -57,6 +63,7 @@ function App() {
           <Route path="/book-now/:eventId" element={<BookNow />} />
           <Route path="/checkoutform" element={<CheckOutForm />} />
         </Routes>
+        
       </div>
       <div>
       <footer className="bg-light text-center text-lg-start">
@@ -101,6 +108,7 @@ function App() {
           </div>
         </footer>
       </div>
+      </Elements>
     </Router>
   );
 }
