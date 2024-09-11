@@ -1,154 +1,118 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
+import { ref, get } from 'firebase/database';
 import { database, auth } from './firebaseConfig';
-import './Styling.css';
-import { get, ref, onValue } from 'firebase/database';
+import { Link } from 'react-router-dom'; 
+import { UserContext } from './UserContext'; 
 import { signOut } from 'firebase/auth'; 
-const AttendeeHomePage = () => {
-    const [firstName, setFirstName] = useState('');
-    const [lastName, setLastName] = useState('');
-    const [upcomingEvents, setUpcomingEvents] = useState([]);
+import { useNavigate } from 'react-router-dom';
+
+
+const AttendeeHomepage = () => {
+    const [events, setEvents] = useState([]);
     const [bookedEvents, setBookedEvents] = useState([]);
-    const [loading, setLoading] = useState(true);
-
+    const { userId } = useContext(UserContext); 
+    const navigate = useNavigate();
+    
     useEffect(() => {
-        const fetchUserData = async () => {
-            const user = auth.currentUser;
-
-            if (user) {
-                const userRef = ref(database, 'users/' + user.uid);
-                onValue(userRef, (snapshot) => {
-                    if (snapshot.exists()) {
-                        const userData = snapshot.val();
-                        setFirstName(userData.firstName);
-                        setLastName(userData.lastName);
-                    }
-                });
-
-                const bookingsRef = ref(database, 'bookings');
-                onValue(bookingsRef, (snapshot) => {
-                    if (snapshot.exists()) {
-                        const bookingsData = snapshot.val();
-                        const userBookings = Object.values(bookingsData).filter(
-                            (booking) => booking.userId === user.uid
-                        );
-
-                        const eventPromises = userBookings.map(async (booking) => {
-                            const eventRef = ref(database, `events/${booking.eventId}`);
-                            const eventSnapshot = await get(eventRef);
-                            if (eventSnapshot.exists()) {
-                                return {
-                                    ...booking,
-                                    eventDetails: eventSnapshot.val(),
-                                };
-                            }
-                            return booking;
-                        });
-
-                        Promise.all(eventPromises).then((userBookedEvents) => {
-                            setBookedEvents(userBookedEvents);
-                        });
-                    }
-                });
+        const fetchEvents = async () => {
+            try {
+                const eventsRef = ref(database, 'events');
+                const snapshot = await get(eventsRef);
+                if (snapshot.exists()) {
+                    const eventsData = snapshot.val();
+                    const eventsList = Object.keys(eventsData).map(key => ({
+                        id: key,
+                        ...eventsData[key]
+                    }));
+                    setEvents(eventsList);
+                } else {
+                    console.log('No events found.');
+                }
+            } catch (error) {
+                console.error('Error fetching events:', error);
             }
         };
 
-        const fetchEvents = async () => {
-            const eventsRef = ref(database, 'events');
-            onValue(eventsRef, (snapshot) => {
-                if (snapshot.exists()) {
-                    const eventsData = snapshot.val();
-                    const eventsArray = Object.values(eventsData);
-                    setUpcomingEvents(eventsArray);
-                }
-            });
-        };
-
-        const loadData = async () => {
-            await fetchUserData();
-            await fetchEvents();
-            setLoading(false);
-        };
-
-        loadData();
+        fetchEvents();
     }, []);
 
-    const handleSignOut = async () => {
-        try {
-            await signOut(auth);
-            window.location.href = '/Login'; 
-        } catch (error) {
-            console.error('Sign Out Error:', error);
+    useEffect(() => {
+        if (userId) {
+            const fetchBookedEvents = async () => {
+                try {
+                    const bookingsRef = ref(database, `bookings/${userId}`);
+                    const snapshot = await get(bookingsRef);
+                    if (snapshot.exists()) {
+                        const bookingsData = snapshot.val();
+                        const bookedEventsList = Object.keys(bookingsData).map(key => ({
+                            id: key,
+                            ...bookingsData[key]
+                        }));
+                        setBookedEvents(bookedEventsList);
+                    } else {
+                        console.log('No booked events found for this user.');
+                    }
+                } catch (error) {
+                    console.error('Error fetching booked events:', error);
+                }
+            };
+            fetchBookedEvents();
         }
+    }, [userId]);
+
+    const handleLogout = () => {
+        signOut(auth).then(() => {
+            navigate('/Login'); 
+        }).catch((error) => {
+            console.error('Error signing out:', error);
+        });
     };
 
-    if (loading) {
-        return <p>Loading...</p>;
-    }
-
+  
     return (
-        <div>
-            <div className="jumbotron text-center">
-                <h1 className="display-4">Welcome, {firstName} {lastName}!</h1>
-                <p className="lead">Explore exciting events and book your tickets now.</p>
-                <button
-                    onClick={handleSignOut}
-                    style={{ position: 'absolute', top: 10, right: 10, color: 'red' }} 
-                >
-                    Sign Out
-                </button>
+        <div className="container mt-5">
+            <div className="d-flex justify-content-between mb-4">
+                <h1>Attendee Homepage</h1>
+                <button className="btn btn-danger" onClick={handleLogout}>Sign Out</button>
             </div>
 
-            <div className="container">
-                <h2 className="text-center">Upcoming Events</h2>
-                <div className="row">
-                    {upcomingEvents.length > 0 ? (
-                        upcomingEvents.map((event, index) => (
-                            <div key={index} className="col-lg-4 mb-4">
-                                <div className="card">
-                                    <div className="card-body">
-                                        <h5 className="card-title">{event.name}</h5>
-                                        <p className="card-text">Date: {event.date}</p>
-                                        <p className="card-text">Location: {event.location}</p>
-                                        <a href={`/book-now/${event.id}`} className="btn btn-primary">Book Now</a>
-                                    </div>
-                                </div>
+            <section className="mb-5">
+                <h2>Upcoming Events</h2>
+                {events.length > 0 ? (
+                    <div className="list-group">
+                        {events.map(event => (
+                            <div key={event.id} className="list-group-item mb-3">
+                                <h4 className="mb-1">{event.name}</h4>
+                                <p className="mb-1"><strong>Date:</strong> {(event.date)} at {event.time}</p>
+                                <p className="mb-1"><strong>Location:</strong> {event.location}</p>
+                                <p className="mb-1"><strong>Description:</strong> {event.description}</p>
+                                <Link to={`/book-now/${event.id}`} className="btn btn-primary">Book Now</Link>
                             </div>
-                        ))
-                    ) : (
-                        <p>No upcoming events found.</p>
-                    )}
-                </div>
+                        ))}
+                    </div>
+                ) : (
+                    <p>No upcoming events available.</p>
+                )}
+            </section>
 
-                <hr />
-
-                <h2 className="text-center">Your Booked Events</h2>
-                <div className="row">
-                    {bookedEvents.length > 0 ? (
-                        bookedEvents.map((booking, index) => (
-                            <div key={index} className="col-lg-4 mb-4">
-                                <div className="card">
-                                    <div className="card-body">
-                                        <h5 className="card-title">
-                                            {booking.eventDetails?.name || 'Event not found'}
-                                        </h5>
-                                        <p className="card-text">
-                                            Date: {booking.eventDetails?.date || 'N/A'}
-                                        </p>
-                                        <p className="card-text">
-                                            Booking Date: {new Date(booking.bookingDate).toLocaleDateString()}
-                                        </p>
-                                        <p className="card-text">Tickets: {booking.tickets}</p>
-                                    </div>
-                                </div>
+            <section>
+                <h2>My Booked Events</h2>
+                {bookedEvents.length > 0 ? (
+                    <div className="list-group">
+                        {bookedEvents.map(event => (
+                            <div key={event.id} className="list-group-item mb-3">
+                                <h4 className="mb-1">{event.eventName}</h4>
+                                <p className="mb-1"><strong>Booked on:</strong> {(event.bookingDate)}</p>
+                                <p className="mb-1"><strong>Tickets:</strong> {event.tickets}</p>
                             </div>
-                        ))
-                    ) : (
-                        <p>No booked events found.</p>
-                    )}
-                </div>
-            </div>
+                        ))}
+                    </div>
+                ) : (
+                    <p>No booked events found.</p>
+                )}
+            </section>
         </div>
     );
 };
 
-export default AttendeeHomePage;
+export default AttendeeHomepage;
