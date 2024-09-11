@@ -21,6 +21,8 @@ import EOHomepage from './EOHomepage';
 import Logo from './vrv1.jpg';
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
+import PrivacyPolicy from './PrivacyPolicy';
+
 
 const stripePromise = loadStripe('pk_test_A7jK4iCYHL045qgjjfzAfPxu');
 
@@ -57,6 +59,7 @@ function App() {
           <Route path="/attendeehomepage" element={<AttendeeHomePage />} />
           <Route path="/about" element={<Aboutus />} />
           <Route path="/terms" element={<Terms />} />
+  <Route path="/PrivacyPolicy" element={<PrivacyPolicy />} />
           <Route path="/create-event" element={<CreateEvent />} />
           <Route path="/Contactus" element={<Contactus />} />
           <Route path="/manageevent" element={<ManageEvents />} />
@@ -89,7 +92,7 @@ function App() {
                 <h5 className="text-uppercase">Privacy Policy</h5>
                 <ul className="list-unstyled">
                   <li>
-                    <a href="PrivacyPolicy.html" className="text-dark">Our Policy</a>
+                    <a href="PrivacyPolicy" className="text-dark">Our Policy</a>
                   </li>
                 </ul>
               </div>
