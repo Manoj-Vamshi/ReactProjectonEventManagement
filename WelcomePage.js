@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import './Styling.css'; // Ensure this file is updated with the above CSS
+import './Styling.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const WelcomePage = () => {
@@ -18,12 +18,12 @@ const WelcomePage = () => {
     <div className="welcome-container">
       <div className="content-wrapper">
         <div className="text-container">
-          <h1 className="text-primary">VRV Events</h1>
+          <h1 className="text-1">VRV Events</h1>
           <p>"Simplify, Organize, Celebrate..!!"</p>
         </div>
         <div className="button-container">
-          <button className="btn btn-primary" onClick={handleSignupClick}>Sign Up</button>
-          <button className="btn btn-primary" onClick={handleLoginClick}>Login</button>
+          <button className="btn btn-custom" onClick={handleSignupClick}>Sign Up</button>
+          <button className="btn btn-custom" onClick={handleLoginClick}>Login</button>
         </div>
       </div>
     </div>
