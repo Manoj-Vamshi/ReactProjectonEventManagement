@@ -1,10 +1,9 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { ref, onValue } from 'firebase/database';
+import { ref, onValue, remove } from 'firebase/database';
 import { database } from './firebaseConfig'; 
 import { Link } from 'react-router-dom';
 import { UserContext } from './UserContext';
 import './Styling.css';
-import ViewEvent from './ViewEvent';
 
 const ManageEvents = () => {
     const [events, setEvents] = useState([]);
@@ -38,6 +37,19 @@ const ManageEvents = () => {
         return () => unsubscribe();
     }, [userId, loading]);
 
+    const handleDelete = async (id) => {
+        if (window.confirm('Are you sure you want to delete this event?')) {
+            try {
+                const eventRef = ref(database, `events/${id}`);
+                await remove(eventRef);
+                setEvents(events.filter(event => event.id !== id));
+                console.log('Event deleted successfully!');
+            } catch (error) {
+                console.error('Error deleting event:', error);
+            }
+        }
+    };
+
     if (loading) return <p>Loading...</p>;
 
     return (
@@ -62,6 +74,12 @@ const ManageEvents = () => {
                                 <td>
                                     <Link to={`/edit-event/${event.id}`} className="btn btn-sm btn-primary">Edit</Link>
                                     <Link to={`/view-event/${event.id}`} className="btn btn-sm btn-info ml-2">View</Link>
+                                    <button 
+                                        className="btn btn-sm btn-danger ml-2" 
+                                        onClick={() => handleDelete(event.id)}
+                                    >
+                                        Delete
+                                    </button>
                                 </td>
                             </tr>
                         ))}

@@ -12,15 +12,24 @@ const EditEvent = () => {
         date: '',
         location: '',
         description: '',
-        time: ''
+        time: '',
+        ticketPrice: ''  
     });
 
     useEffect(() => {
         const eventRef = ref(database, `events/${id}`);
         get(eventRef).then((snapshot) => {
             if (snapshot.exists()) {
-                setEvent(snapshot.val());
-                setFormData(snapshot.val());
+                const eventData = snapshot.val();
+                setEvent(eventData);
+                setFormData({
+                    name: eventData.name,
+                    date: eventData.date,
+                    location: eventData.location,
+                    description: eventData.description,
+                    time: eventData.time,
+                    ticketPrice: eventData.ticketPrice || ''  
+                });
             } else {
                 console.log('No event found!');
             }
@@ -42,7 +51,7 @@ const EditEvent = () => {
         const eventRef = ref(database, `events/${id}`);
         update(eventRef, formData).then(() => {
             console.log('Event updated successfully!');
-            navigate(`/view-event/${id}`);
+            navigate(`/view-event/${id}`); 
         }).catch((error) => {
             console.error('Error updating event:', error);
         });
@@ -109,6 +118,18 @@ const EditEvent = () => {
                         name="time"
                         className="form-control"
                         value={formData.time}
+                        onChange={handleChange}
+                        required
+                    />
+                </div>
+                <div className="form-group">
+                    <label htmlFor="ticketPrice">Ticket Price ($)</label>
+                    <input
+                        type="number"
+                        id="ticketPrice"
+                        name="ticketPrice"
+                        className="form-control"
+                        value={formData.ticketPrice}
                         onChange={handleChange}
                         required
                     />

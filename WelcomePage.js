@@ -10,22 +10,20 @@ const WelcomePage = () => {
     navigate('/signup');
   };
 
-
-
   const handleLoginClick = () => {
     navigate('/login');
   };
-  return (
-    <div>
-      <div className="container-fluid">
 
-        <div className="tagline">
-          <h1 className="text-primary">VRV Events</h1>
+  return (
+    <div className="welcome-container">
+      <div className="content-wrapper">
+        <div className="text-container">
+          <h1 className="text-1">VRV Events</h1>
           <p>"Simplify, Organize, Celebrate..!!"</p>
-       
-       
-          <button className="btn  btn-outline-secondary" onClick={handleSignupClick}>Sign Up</button>
-          <button className="btn  btn-outline-secondary" onClick={handleLoginClick}>Login</button>
+        </div>
+        <div className="button-container">
+          <button className="btn btn-custom" onClick={handleSignupClick}>Sign Up</button>
+          <button className="btn btn-custom" onClick={handleLoginClick}>Login</button>
         </div>
       </div>
     </div>

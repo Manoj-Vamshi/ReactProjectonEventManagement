@@ -1,35 +1,86 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { auth, database } from './firebaseConfig';
-import { ref, get } from 'firebase/database';
+import { ref, onValue, get } from 'firebase/database';
+import { signOut } from 'firebase/auth'; 
 import './Styling.css';
+import { UserContext } from './UserContext';
 
 const EOHomepage = () => {
     const [firstName, setFirstName] = useState('');
     const [events, setEvents] = useState([]);
     const navigate = useNavigate();
+    const { userId, loading } = useContext(UserContext);
 
     useEffect(() => {
+        if (loading) return;
+
+        if (!userId) {
+            setEvents([]);
+            return;
+        }
+
         const fetchUserData = async () => {
-            const user = auth.currentUser;
-            if (user) {
-                const userRef = ref(database, 'users/' + user.uid);
-                const snapshot = await get(userRef);
-                if (snapshot.exists()) {
-                    const userData = snapshot.val();
-                    setFirstName(userData.firstName);
-                    
-                    if (userData.events) {
-                        setEvents(userData.events);
+            try {
+                const user = auth.currentUser;
+                if (user) {
+                    const userRef = ref(database, 'users/' + user.uid);
+                    const snapshot = await get(userRef);
+                    if (snapshot.exists()) {
+                        const userData = snapshot.val();
+                        setFirstName(userData.firstName || 'User');
+
+                        const eventsRef = ref(database, `events`);
+                        const unsubscribe = onValue(eventsRef, (snapshot) => {
+                            if (snapshot.exists()) {
+                                const eventsData = snapshot.val();
+                                
+                                const filteredEvents = Object.keys(eventsData)
+                                    .filter(key => eventsData[key].createdBy === userId)
+                                    .map(key => ({
+                                        id: key,
+                                        ...eventsData[key]
+                                    }))
+                                    .map(event => ({
+                                        ...event,
+                                        ticketPrice: Number(event.ticketPrice)  
+                                    }));
+                                setEvents(filteredEvents);
+                            } else {
+                                setEvents([]);
+                            }
+                        });
+
+                        return () => unsubscribe();
+                    } else {
+                        console.error('No user data available');
                     }
-                } else {
-                    console.error('No data available');
                 }
+            } catch (error) {
+                console.error('Error fetching user data:', error);
             }
         };
 
         fetchUserData();
-    }, []);
+    }, [userId, loading]);
+
+    const getUpcomingEventsCount = () => {
+        return events.filter(event => new Date(event.date) > new Date()).length;
+    };
+
+    const getPastEventsCount = () => {
+        return events.filter(event => new Date(event.date) <= new Date()).length;
+    };
+
+    const handleLogout = () => {
+        signOut(auth).then(() => {
+            navigate('/Login'); 
+        }).catch((error) => {
+            console.error('Error signing out:', error);
+        });
+    };
+
+    if (loading) return <p>Loading...</p>;
 
     return (
         <div className="container mt-4">
@@ -38,8 +89,9 @@ const EOHomepage = () => {
                     <div className="list-group">
                         <Link to="/dashboard" className="list-group-item list-group-item-action active">Dashboard</Link>
                         <Link to="/create-event" className="list-group-item list-group-item-action">Create New Event</Link>
-                        <Link to="/manageevent" className="list-group-item list-group-item-action">Manage Events</Link>
+                        <Link to="/manage-events" className="list-group-item list-group-item-action">Manage Events</Link>
                         <Link to="/profile" className="list-group-item list-group-item-action">Profile</Link>
+                        <button onClick={handleLogout} className="list-group-item list-group-item-action">Logout</button>
                     </div>
                 </div>
 
@@ -58,7 +110,7 @@ const EOHomepage = () => {
                             <div className="card text-white bg-success mb-3">
                                 <div className="card-header">Upcoming Events</div>
                                 <div className="card-body">
-                                    <h5 className="card-title">{events.filter(event => new Date(event.date) > new Date()).length}</h5>
+                                    <h5 className="card-title">{getUpcomingEventsCount()}</h5>
                                 </div>
                             </div>
                         </div>
@@ -66,7 +118,7 @@ const EOHomepage = () => {
                             <div className="card text-white bg-danger mb-3">
                                 <div className="card-header">Past Events</div>
                                 <div className="card-body">
-                                    <h5 className="card-title">{events.filter(event => new Date(event.date) <= new Date()).length}</h5>
+                                    <h5 className="card-title">{getPastEventsCount()}</h5>
                                 </div>
                             </div>
                         </div>
@@ -80,26 +132,29 @@ const EOHomepage = () => {
                                     <tr>
                                         <th scope="col">Event Name</th>
                                         <th scope="col">Date</th>
+                                        <th scope="col">Ticket Price</th>
                                         <th scope="col">Status</th>
-                                        <th scope="col">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {events.map((event, index) => (
-                                        <tr key={index}>
-                                            <td>{event.name}</td>
-                                            <td>{event.date}</td>
-                                            <td>
-                                                <span className={`badge ${new Date(event.date) > new Date() ? 'badge-success' : 'badge-danger'}`}>
-                                                    {new Date(event.date) > new Date() ? 'Upcoming' : 'Past'}
-                                                </span>
-                                            </td>
-                                            <td>
-                                                <Link to={`/edit-event/${event.id}`} className="btn btn-sm btn-primary">Edit</Link>
-                                                <Link to={`/view-event/${event.id}`} className="btn btn-sm btn-info ml-2">View</Link>
-                                            </td>
+                                    {events.length > 0 ? (
+                                        events.map((event) => (
+                                            <tr key={event.id}>
+                                                <td>{event.name}</td>
+                                                <td>{new Date(event.date).toLocaleDateString()}</td>
+                                                <td>${event.ticketPrice.toFixed(2)}</td>  
+                                                <td>
+                                                    <span className={`badge ${new Date(event.date) > new Date() ? 'badge-success' : 'badge-danger'}`}>
+                                                        {new Date(event.date) > new Date() ? 'Open' : 'Closed'}
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        ))
+                                    ) : (
+                                        <tr>
+                                            <td colSpan="4">No events found</td>
                                         </tr>
-                                    ))}
+                                    )}
                                 </tbody>
                             </table>
                         </div>

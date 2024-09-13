@@ -30,6 +30,7 @@ const ViewEvent = () => {
             <p><strong>Location:</strong> {event.location}</p>
             <p><strong>Description:</strong> {event.description}</p>
             <p><strong>Time:</strong> {event.time}</p>
+            <p><strong>Ticket Price:</strong> {event.ticketPrice}</p>
         </div>
     );
 };

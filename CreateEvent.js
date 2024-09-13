@@ -10,13 +10,15 @@ const CreateEvent = () => {
     const [eventTime, setEventTime] = useState('');
     const [eventLocation, setEventLocation] = useState('');
     const [eventDescription, setEventDescription] = useState('');
+    const [ticketPrice, setTicketPrice] = useState('');
     const [error, setError] = useState('');
+    const [successMessage, setSuccessMessage] = useState(''); 
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (!eventName || !eventDate || !eventTime || !eventLocation) {
+        if (!eventName || !eventDate || !eventTime || !eventLocation || ticketPrice === '') {
             setError('Please fill in all required fields.');
             return;
         }
@@ -29,11 +31,25 @@ const CreateEvent = () => {
                 time: eventTime,
                 location: eventLocation,
                 description: eventDescription,
+                ticketPrice: parseFloat(ticketPrice),
                 createdBy: auth.currentUser.uid,
             };
 
             await push(eventsRef, newEvent);
-            navigate('/manageevent'); // Redirect to manage events page after successful creation
+
+            setEventName('');
+            setEventDate('');
+            setEventTime('');
+            setEventLocation('');
+            setEventDescription('');
+            setTicketPrice('');
+
+            setSuccessMessage('Event created successfully!');
+            
+            setTimeout(() => {
+                setSuccessMessage('');
+                navigate('/EOHomepage'); 
+            }, 2000);
         } catch (error) {
             console.error('Error creating event:', error);
             setError('Failed to create event. Please try again.');
@@ -44,6 +60,7 @@ const CreateEvent = () => {
         <div className="container mt-5">
             <h1>Create Event</h1>
             {error && <div className="alert alert-danger">{error}</div>}
+            {successMessage && <div className="alert alert-success">{successMessage}</div>}
             <form onSubmit={handleSubmit}>
                 <div className="form-group">
                     <label htmlFor="eventName">Event Name</label>
@@ -101,6 +118,18 @@ const CreateEvent = () => {
                         value={eventDescription}
                         onChange={(e) => setEventDescription(e.target.value)}
                     ></textarea>
+                </div>
+                <div className="form-group">
+                    <label htmlFor="ticketPrice">Ticket Price ($)</label>
+                    <input
+                        type="number"
+                        className="form-control"
+                        id="ticketPrice"
+                        placeholder="Enter ticket price"
+                        value={ticketPrice}
+                        onChange={(e) => setTicketPrice(e.target.value)}
+                        required
+                    />
                 </div>
                 <button type="submit" className="btn btn-primary">Create Event</button>
             </form>
