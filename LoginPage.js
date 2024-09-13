@@ -12,28 +12,29 @@ const LoginPage = () => {
   const [password, setPassword] = useState('');
   const [resetEmail, setResetEmail] = useState('');
   const navigate = useNavigate();
+  const [isModelOpen, setIsModelOpen] = useState(false);
 
   const handleLogin = async (e) => {
     e.preventDefault();
 
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
 
-      const roleRef = ref(database, 'users/' + user.uid + '/role');
-      const snapshot = await get(roleRef);
-      const userRole = snapshot.val();
+        const roleRef = ref(database, 'users/' + user.uid + '/role');
+        const snapshot = await get(roleRef);
+        const userRole = snapshot.val();
 
-      if (userRole === 'admin') {
-        navigate('/adminhomepage');
-      } else if (userRole === 'eventorganizer') {
-        navigate('/eventoragniserhomepage');
-      } else if (userRole === 'attendee') {
-        navigate('/attendeehomepage');
-      }
+        if (userRole === 'admin') {
+            navigate('/adminhomepage');
+        } else if (userRole === 'eventorganizer') {
+            navigate('/eventorganizerhomepage');
+        } else if (userRole === 'attendee') {
+            navigate('/attendeehomepage');
+        }
     } catch (error) {
-      console.error('Error during login:', error);
-      alert('Login failed. Please try again.');
+        console.error('Error during login:', error);
+        alert('Login failed. Please try again.');
     }
   };
 
@@ -50,15 +51,14 @@ const LoginPage = () => {
 
   const openModel = () => setIsModelOpen(true);
   const closeModel = () => setIsModelOpen(false);
-  const [isModelOpen, setIsModelOpen] = useState(false);
 
   return (
-    <div className="signup-container">
+    <div className="login-container">
       <div className="form-wrapper">
         <h1 className="text-center">Login</h1>
         <form onSubmit={handleLogin}>
           <div className="form-group">
-            <label htmlFor="email">Email:</label>
+            <label>Email:</label>
             <input
               type="email"
               id="email"
@@ -79,30 +79,31 @@ const LoginPage = () => {
               required
             />
           </div>
-          <button className="btn btn-primary" type="submit">Login</button>
+          <div className="button-group">
+            <button className="btn btn-primary login-btn" type="submit">Login</button>
+            <button className="btn btn-link" onClick={openModel}>Forgot Password?</button>
+          </div>
         </form>
-        <button className="btn btn-link text-center" onClick={openModel}>Forgot Password?</button>
-
-        <Model isOpen={isModelOpen} onClose={closeModel}>
-          <h2 id='rname'>Reset Password</h2>
-          <form onSubmit={handlePasswordReset}>
-            <div className="form-group">
-              <label htmlFor="resetEmail">Email</label>
-              <input
-                type="email"
-                id="resetEmail"
-                name="resetEmail"
-                className="form-control"
-                placeholder="Enter your email"
-                value={resetEmail}
-                onChange={(e) => setResetEmail(e.target.value)}
-                required
-              />
-            </div>
-            <button className="btn btn-primary" type="submit">Send Reset Email</button>
-          </form>
-        </Model>
       </div>
+
+      <Model isOpen={isModelOpen} onClose={closeModel}>
+        <h2>Reset Password</h2>
+        <form onSubmit={handlePasswordReset}>
+          <div className="input-group">
+            <label htmlFor="resetEmail">Email:</label>
+            <input
+              type="email"
+              id="resetEmail"
+              name="resetEmail"
+              placeholder="Enter your email"
+              value={resetEmail}
+              onChange={(e) => setResetEmail(e.target.value)}
+              required
+            />
+          </div>
+          <button className="btn btn-primary reset-btn" type="submit">Send Reset Email</button>
+        </form>
+      </Model>
     </div>
   );
 };
