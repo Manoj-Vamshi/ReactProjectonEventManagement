@@ -28,7 +28,7 @@ const LoginPage = () => {
         if (userRole === 'admin') {
             navigate('/adminhomepage');
         } else if (userRole === 'eventorganizer') {
-            navigate('/eventorganizerhomepage');
+            navigate('/EOHomepage');
         } else if (userRole === 'attendee') {
             navigate('/attendeehomepage');
         }
