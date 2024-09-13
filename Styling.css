@@ -19,7 +19,7 @@ html, body {
 
 footer {
   background-color: #343a40; 
-  color: white;
+  color: #feea50;
   padding: 20px 0;
   text-align: center;
 }
@@ -514,4 +514,44 @@ p {
 
 .main-content {
   flex: 1;
+}
+
+.privacy-policy-container {
+  background-color: #1a1a1a; 
+  color: white; 
+  padding: 2rem; 
+  font-family: Arial, sans-serif; 
+  max-width: auto; 
+  margin: auto; 
+  border-radius: 8px; 
+}
+
+.privacy-policy-container h1 {
+  color: #feea50;  
+  margin-bottom: 1rem;  
+}
+
+.privacy-policy-container h2 {
+  color: #feea50; 
+  margin-top: 1.5rem;  
+  margin-bottom: 0.5rem;  
+}
+
+.privacy-policy-container strong {
+  color: #feea50; 
+}
+
+.privacy-policy-container p {
+  color: white; 
+  line-height: 1.6;  
+  margin-bottom: 1rem;  
+}
+
+.privacy-policy-container ul {
+  color: white;  
+  margin-left: 2rem;  
+}
+
+.privacy-policy-container li {
+  margin-bottom: 0.5rem;  
 }
