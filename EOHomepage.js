@@ -144,10 +144,14 @@ const EOHomepage = () => {
                                                 <td>{new Date(event.date).toLocaleDateString()}</td>
                                                 <td>${event.ticketPrice.toFixed(2)}</td>  
                                                 <td>
-                                                    <span className={`badge ${new Date(event.date) > new Date() ? 'badge-success' : 'badge-danger'}`}>
+                                                    <span
+                                                        className={`badge ${new Date(event.date) > new Date() ? 'badge-success' : 'badge-danger'}`}
+                                                        style={{ color: new Date(event.date) > new Date() ? 'green' : 'red' }}
+                                                    >
                                                         {new Date(event.date) > new Date() ? 'Open' : 'Closed'}
                                                     </span>
                                                 </td>
+
                                             </tr>
                                         ))
                                     ) : (
